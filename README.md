@@ -12,11 +12,12 @@ With [PlantUML](https://plantuml.com/) C4 diagrams are breeze to mock out.
 
 ## Local Setup
 Setup a local alias
-echo -n 'export PATH=~/bin:$PATH' >> ~/.zshrc
-`echo -n "alias plantuml='docker run -v $(pwd)/doc/design/assets/:/assets plantuml'" >> ~/.zshrc`
+```sh
+echo -n "alias plantuml='docker run -v $(pwd)/doc/design/assets/:/assets plantuml'" >> ~/.zshrc
+```
 
 
 ## Design Guide 
-See the design [design guide] for more information.
+See the design [design guide] for more
 
 [design guide]: doc/design/design.md "Optional Title Here"
