@@ -18,6 +18,6 @@ echo -n "alias plantuml='docker run -v $(pwd)/doc/design/assets/:/assets plantum
 
 
 ## Design Guide 
-See the design [design guide] for more
+See the [design guide] for a quick example
 
 [design guide]: doc/design/design.md "Optional Title Here"
