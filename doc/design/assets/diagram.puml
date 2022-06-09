@@ -1,4 +1,4 @@
-@startuml Basic Sample
+@startuml Basic_Sample
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
 Person(admin, "Administrator")
