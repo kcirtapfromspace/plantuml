@@ -1,0 +1,32 @@
+name: Generate PlantUML diagrams
+
+on:
+  push:
+    paths:
+      - 'doc/design/**'
+  pull_request:
+    paths:
+      - 'doc/design/**'
+
+jobs:
+  generate-diagrams:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Generate PlantUML diagrams
+      run: |
+        docker run --rm -v ${{ github.workspace }}/doc/design/assets:/assets ghcr.io/kcirtapfromspace/plantuml/plantuml:latest
+
+    - name: Set up Git user
+      run: |
+        git config --local user.email "github-actions@users.noreply.github.com"
+        git config --local user.name "GitHub Actions"
+
+    - name: Commit generated diagrams
+      run: |
+        git add doc/design/assets
+        git diff-index --quiet HEAD || git commit -m "Update generated PlantUML diagrams"
+        git push
