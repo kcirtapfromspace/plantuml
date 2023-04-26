@@ -24,25 +24,25 @@ jobs:
       run: |
         DELETED_FILES=$(git diff --diff-filter=D --name-only HEAD^ HEAD | grep 'doc/design/')
         if [ -n "$DELETED_FILES" ]; then
-          echo "::set-output name=skip::true"
+          echo "skip=true" >> $GITHUB_ENV
         else
-          echo "::set-output name=skip::false"
+          echo "skip=false" >> $GITHUB_ENV
         fi
       shell: bash
 
     - name: Generate PlantUML diagrams
-      if: steps.check-deleted.outputs.skip == 'false'
+      if: env.skip == 'false'
       run: |
         docker run --rm -v ${{ github.workspace }}/doc/design/assets:/assets ghcr.io/kcirtapfromspace/plantuml/plantuml:latest
 
     - name: Set up Git user
-      if: steps.check-deleted.outputs.skip == 'false'
+      if: env.skip == 'false'
       run: |
         git config --local user.email "github-actions@users.noreply.github.com"
         git config --local user.name "GitHub Actions"
 
     - name: Commit generated diagrams
-      if: steps.check-deleted.outputs.skip == 'false'
+      if: env.skip == 'false'
       run: |
         git add doc/design/assets
         git diff-index --quiet HEAD || git commit -m "Update generated PlantUML diagrams"
