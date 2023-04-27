@@ -40,7 +40,7 @@ jobs:
 
     - name: Generate PlantUML diagrams
       if: env.skip == 'false'
-      uses: kcirtapfromspace/plantuml@latest
+      uses: docker://ghcr.io/kcirtapfromspace/plantuml/plantuml:latest
       with:
           args: -v -tsvg -tpng ${{ matrix.puml_file }}
 
