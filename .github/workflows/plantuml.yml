@@ -28,9 +28,6 @@ jobs:
   generate-diagrams:
     needs: prepare
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        puml_file: ${{ fromJson(needs.prepare.outputs.puml_files) }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -41,7 +38,7 @@ jobs:
     - name: Generate PlantUML diagrams
       uses: docker://ghcr.io/kcirtapfromspace/plantuml/plantuml:latest
       with:
-        args: -v -tsvg -tpng ${{ matrix.puml_file }}
+        args: -v -tsvg -tpng ${{ join(fromJson(needs.prepare.outputs.puml_files), ' ') }}
 
     - name: Set up Git user
       run: |
