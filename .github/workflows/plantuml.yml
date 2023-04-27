@@ -51,19 +51,19 @@ jobs:
 
 
     - name: Generate PlantUML diagrams
-      if: env.skip == 'false'
+      if: env.STATE_skip == 'false'
       uses: docker://ghcr.io/kcirtapfromspace/plantuml/plantuml:latest
       with:
           args: -v -tsvg -tpng ${{ matrix.puml_file }}
 
     - name: Set up Git user
-      if: env.skip == 'false'
+      if: env.STATE_skip == 'false'
       run: |
         git config --local user.email "github-actions@users.noreply.github.com"
         git config --local user.name "GitHub Actions"
 
     - name: Commit generated diagrams
-      if: env.skip == 'false'
+      if: env.STATE_skip == 'false'
       run: |
         git add doc/design/assets
         git diff-index --quiet HEAD || git commit -m "Update generated PlantUML diagrams"
