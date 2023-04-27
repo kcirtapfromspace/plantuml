@@ -50,7 +50,8 @@ jobs:
 
     - name: Commit generated diagrams
       run: |
-        png_file="${{ replace(matrix.puml_file, '.puml', '.png') }}"
+        png_file="$(echo '${{ matrix.puml_file }}' | sed 's/\.puml$/.png/')"
+        svg_file="$(echo '${{ matrix.puml_file }}' | sed 's/\.puml$/.svg/')"
         git add $png_file
         git diff-index --quiet HEAD || git commit -m "Update generated PlantUML diagrams"
         git push origin ${{ github.head_ref }}
