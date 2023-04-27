@@ -8,7 +8,6 @@ on:
     paths:
       - '**.puml'
 
-
 jobs:
   prepare:
     runs-on: ubuntu-latest
@@ -24,15 +23,14 @@ jobs:
     - name: Get list of .puml files
       id: getfile
       run: |
-        echo "files=$(find . -path './doc/design/**/*.puml' -not -path '*/\node_modules/*' | sed 's/ /\\ /g' | tr '\n' '|' | sed 's/|$//')" >> $GITHUB_OUTPUT
+        echo "files=$(find . -path './doc/design/**/*.puml' -not -path '*/\node_modules/*' | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
 
   generate-diagrams:
     needs: prepare
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        puml_file: ${{ split(needs.prepare.outputs.puml_files, '|') }}
-
+        puml_file: ${{ fromJson(needs.prepare.outputs.puml_files) }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
