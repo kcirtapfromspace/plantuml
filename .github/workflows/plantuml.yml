@@ -41,13 +41,14 @@ jobs:
     - name: Check for deleted files
       id: check-deleted
       run: |
-        DELETED_FILES=$(git diff --diff-filter=D --name-only HEAD^ HEAD | grep 'doc/design/')
+        DELETED_FILES=$(git diff --diff-filter=D --name-only HEAD^ HEAD | grep 'doc/design/' || true)
         if [ -n "$DELETED_FILES" ]; then
           echo "skip=true" >> $GITHUB_STATE
         else
           echo "skip=false" >> $GITHUB_STATE
         fi
       shell: bash
+
 
     - name: Generate PlantUML diagrams
       if: env.skip == 'false'
