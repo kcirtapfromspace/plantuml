@@ -48,10 +48,10 @@ jobs:
       with: 
         commit_user_name: "GitHub Actions"
         commit_user_email: "github-actions@users.noreply.github.com"
-        commit_author: "Generate PlantUML Diagrams"
+        commit_author: "Generate PlantUML Diagrams <github-actions@users.noreply.github.com>"
         commit_message: "Generate SVG and PNG images for PlantUML diagrams" 
         branch: ${{ github.head_ref }}
-        
+
     # - name: Set up Git user
     #   run: |
     #     git config --local user.email "github-actions@users.noreply.github.com"
