@@ -23,8 +23,7 @@ jobs:
     - name: Get list of .puml files
       id: getfile
       run: |
-        echo "::set-output name=files::$(find . -path './doc/design/**/*.puml' -not -path '*/\node_modules/*' | tr '\n' ',' | sed 's/,$//')"
-      shell: bash
+        echo "files=$(find . -path './doc/design/**/*.puml' -not -path '*/\node_modules/*' | tr '\n' ',' | sed 's/,$//')" >> $GITHUB_OUTPUT
 
   generate-diagrams:
     needs: prepare
@@ -44,9 +43,9 @@ jobs:
       run: |
         DELETED_FILES=$(git diff --diff-filter=D --name-only HEAD^ HEAD | grep 'doc/design/')
         if [ -n "$DELETED_FILES" ]; then
-          echo "skip=true" >> $GITHUB_ENV
+          echo "skip=true" >> $GITHUB_STATE
         else
-          echo "skip=false" >> $GITHUB_ENV
+          echo "skip=false" >> $GITHUB_STATE
         fi
       shell: bash
 
