@@ -43,6 +43,15 @@ jobs:
       with:
         args: -v -tsvg -tpng ${{ matrix.puml_file }}
 
+    - name: Push Local Changes
+      uses:  stefanzweifel/git-auto-commit-action@v4.16.0 
+      with: 
+        commit_user_name: "GitHub Actions"
+        commit_user_email: "github-actions@users.noreply.github.com"
+        commit_author: "Generate PlantUML Diagrams"
+        commit_message: "Generate SVG and PNG images for PlantUML diagrams" 
+        branch: ${{ github.head_ref }}
+        
     # - name: Set up Git user
     #   run: |
     #     git config --local user.email "github-actions@users.noreply.github.com"
@@ -55,12 +64,3 @@ jobs:
     #     git add $png_file
     #     git diff-index --quiet HEAD || git commit -m "Update generated PlantUML diagrams"
     #     git push origin ${{ github.head_ref }}
-
-      - name: Push Local Changes
-        uses:  stefanzweifel/git-auto-commit-action@v4.16.0 
-        with: 
-          commit_user_name: "GitHub Actions"
-          commit_user_email: "github-actions@users.noreply.github.com"
-          commit_author: "Generate PlantUML Diagrams"
-          commit_message: "Generate SVG and PNG images for PlantUML diagrams" 
-          branch: ${{ github.head_ref }}
