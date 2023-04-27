@@ -17,5 +17,7 @@ RUN yum update -y && \
 COPY --from=base /plantuml.jar /workspace/plantuml.jar
 
 ENV GRAPHVIC_DOT=/usr/bin/dot
+ENV PLANTUML_LIMIT_SIZE=16384
 ENTRYPOINT [ "java", "-jar","/workspace/plantuml.jar" ]
 CMD ["-version"]
+
