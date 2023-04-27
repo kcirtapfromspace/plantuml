@@ -25,13 +25,6 @@ jobs:
       run: |
         echo "files=$(find . -path './**/*.puml'| jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
 
-  generate-diagrams:
-    needs: prepare
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        puml_file: ${{ fromJson(needs.prepare.outputs.puml_files) }}
-    steps:
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
@@ -41,7 +34,7 @@ jobs:
     - name: Generate PlantUML diagrams
       uses: docker://ghcr.io/kcirtapfromspace/plantuml/plantuml:latest
       with:
-        args: -v -tsvg -tpng ${{ matrix.puml_file }}
+        args: -v -tsvg -tpng ${{ fromJson(needs.prepare.outputs.puml_files) }}
 
     - name: Push Local Changes
       uses:  stefanzweifel/git-auto-commit-action@v4.16.0 
