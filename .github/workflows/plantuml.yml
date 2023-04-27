@@ -9,11 +9,10 @@ on:
       - '**.puml'
 
 jobs:
-  generate-diagrams:
+  prepare:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        puml_file: ${{fromJson(github.event.inputs.puml_files)}}
+    outputs:
+      puml_files: ${{ steps.getfile.outputs.files }}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
@@ -24,8 +23,21 @@ jobs:
     - name: Get list of .puml files
       id: getfile
       run: |
-        echo "::set-output name=files::$(find . -path './doc/design/**/*.puml' -not -path '*/\node_modules/*' | sed 's/ /\\ /g' | tr '\n' ' ')"
+        echo "::set-output name=files::$(find . -path './doc/design/**/*.puml' -not -path '*/\node_modules/*' | tr '\n' ',' | sed 's/,$//')"
       shell: bash
+
+  generate-diagrams:
+    needs: prepare
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        puml_file: ${{fromJson(needs.prepare.outputs.puml_files)}}
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        ref: ${{ github.head_ref }}
 
     - name: Check for deleted files
       id: check-deleted
@@ -40,7 +52,7 @@ jobs:
 
     - name: Generate PlantUML diagrams
       if: env.skip == 'false'
-      uses: docker://ghcr.io/kcirtapfromspace/plantuml/plantuml:latest
+      uses: ghcr.io/kcirtapfromspace/plantuml/plantuml:latest
       with:
           args: -v -tsvg -tpng ${{ matrix.puml_file }}
 
