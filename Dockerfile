@@ -18,4 +18,4 @@ COPY --from=base /plantuml.jar /workspace/plantuml.jar
 
 ENV GRAPHVIC_DOT=/usr/bin/dot
 ENTRYPOINT [ "java", "-jar","/workspace/plantuml.jar" ]
-CMD [ "/assets" ]
+CMD ["-version"]

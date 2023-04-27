@@ -3,21 +3,29 @@ name: Generate PlantUML diagrams
 on:
   push:
     paths:
-      - 'doc/design/**'
+      - '**.puml'
   pull_request:
     paths:
-      - 'doc/design/**'
+      - '**.puml'
 
 jobs:
   generate-diagrams:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        puml_file: ${{fromJson(github.event.inputs.puml_files)}}
     steps:
     - name: Checkout repository
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
         ref: ${{ github.head_ref }}
+
+    - name: Get list of .puml files
+      id: getfile
+      run: |
+        echo "::set-output name=files::$(find . -path './doc/design/**/*.puml' -not -path '*/\node_modules/*' | sed 's/ /\\ /g' | tr '\n' ' ')"
+      shell: bash
 
     - name: Check for deleted files
       id: check-deleted
@@ -32,8 +40,9 @@ jobs:
 
     - name: Generate PlantUML diagrams
       if: env.skip == 'false'
-      run: |
-        docker run --rm -v ${{ github.workspace }}/doc/design/assets:/assets ghcr.io/kcirtapfromspace/plantuml/plantuml:latest
+      uses: ghcr.io/kcirtapfromspace/plantuml/plantuml:latest
+      with:
+          args: -v -tsvg -tpng ${{ matrix.puml_file }}
 
     - name: Set up Git user
       if: env.skip == 'false'
