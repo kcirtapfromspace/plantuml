@@ -23,7 +23,7 @@ jobs:
     - name: Get list of .puml files
       id: getfile
       run: |
-        echo "files=$(find . -path './doc/design/**/*.puml' -not -path '*/\node_modules/*' | jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
+        echo "files=$(find . -path './**/*.puml'| jq -R -s -c 'split("\n")[:-1]')" >> $GITHUB_OUTPUT
 
   generate-diagrams:
     needs: prepare
@@ -38,33 +38,19 @@ jobs:
         fetch-depth: 0
         ref: ${{ github.head_ref }}
 
-    - name: Check for deleted files
-      id: check-deleted
-      run: |
-        DELETED_FILES=$(git diff --diff-filter=D --name-only HEAD^ HEAD | grep 'doc/design/' || true)
-        if [ -n "$DELETED_FILES" ]; then
-          echo "skip=true" >> $GITHUB_STATE
-        else
-          echo "skip=false" >> $GITHUB_STATE
-        fi
-      shell: bash
-
-
     - name: Generate PlantUML diagrams
-      if: env.STATE_skip == 'false'
       uses: docker://ghcr.io/kcirtapfromspace/plantuml/plantuml:latest
       with:
-          args: -v -tsvg -tpng ${{ matrix.puml_file }}
+        args: -v -tsvg -tpng ${{ matrix.puml_file }}
 
     - name: Set up Git user
-      if: env.STATE_skip == 'false'
       run: |
         git config --local user.email "github-actions@users.noreply.github.com"
         git config --local user.name "GitHub Actions"
 
     - name: Commit generated diagrams
-      if: env.STATE_skip == 'false'
       run: |
-        git add doc/design/assets
+        png_file="${{ matrix.puml_file % '.puml' }}.png"
+        git add $png_file
         git diff-index --quiet HEAD || git commit -m "Update generated PlantUML diagrams"
         git push origin ${{ github.head_ref }}
