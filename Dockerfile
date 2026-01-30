@@ -7,7 +7,7 @@ RUN export TAG=$(curl -s https://api.github.com/repos/plantuml/plantuml/releases
     export DOWNLOAD_URL=$(curl -s https://api.github.com/repos/plantuml/plantuml/releases/latest | jq -r '.assets[] | select(.name|match("'${VERSION}'$")) | .browser_download_url') &&\
     curl -L ${DOWNLOAD_URL} -o plantuml.jar
 
-FROM amazoncorretto:latest
+FROM amazoncorretto:8u482-al2-generic
 WORKDIR /workspace
 
 RUN yum update -y && \
